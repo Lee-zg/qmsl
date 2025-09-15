@@ -31,19 +31,40 @@
     
     let config = GM_getValue('pageBeautifier_config', DEFAULT_CONFIG);
     
+    // 应用所有设置
+    function applyAllSettings() {
+        // 清除之前的样式
+        const existingDarkStyle = document.getElementById('pageBeautifier-dark-style');
+        const existingFontStyle = document.getElementById('pageBeautifier-font-style');
+        
+        if (existingDarkStyle) existingDarkStyle.remove();
+        if (existingFontStyle) existingFontStyle.remove();
+        
+        // 重新应用设置
+        applyDarkMode();
+        applyFontSize();
+        hideAds();
+    }
+    
     // 应用暗黑模式
     function applyDarkMode() {
         if (config.darkMode) {
-            GM_addStyle(`
+            const style = document.createElement('style');
+            style.id = 'pageBeautifier-dark-style';
+            style.textContent = `
                 html { filter: invert(1) hue-rotate(180deg) !important; }
                 img, video, iframe, svg { filter: invert(1) hue-rotate(180deg) !important; }
-            `);
+            `;
+            document.head.appendChild(style);
         }
     }
     
     // 应用字体大小
     function applyFontSize() {
-        GM_addStyle(`* { font-size: ${config.fontSize}px !important; }`);
+        const style = document.createElement('style');
+        style.id = 'pageBeautifier-font-style';
+        style.textContent = `* { font-size: ${config.fontSize}px !important; }`;
+        document.head.appendChild(style);
     }
     
     // 隐藏广告
@@ -74,7 +95,14 @@
     
     // 显示设置面板
     function showSettingsPanel() {
+        // 如果已存在设置面板，先移除
+        const existingPanel = document.getElementById('pageBeautifierPanel');
+        if (existingPanel) {
+            existingPanel.remove();
+        }
+        
         const panel = document.createElement('div');
+        panel.id = 'pageBeautifierPanel';
         panel.innerHTML = `
             <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
                         background:white;padding:20px;border:1px solid #ccc;border-radius:8px;
@@ -83,8 +111,8 @@
                 <label><input type="checkbox" id="darkMode" ${config.darkMode ? 'checked' : ''}> 暗黑模式</label><br><br>
                 <label>字体大小: <input type="range" id="fontSize" min="12" max="24" value="${config.fontSize}"> <span id="fontSizeValue">${config.fontSize}</span>px</label><br><br>
                 <label><input type="checkbox" id="hideAds" ${config.hideAds ? 'checked' : ''}> 隐藏广告</label><br><br>
-                <button onclick="applySettings()">应用</button>
-                <button onclick="this.parentElement.remove()">关闭</button>
+                <button id="applyBtn">应用</button>
+                <button id="closeBtn">关闭</button>
             </div>
         `;
         
@@ -95,14 +123,24 @@
             panel.querySelector('#fontSizeValue').textContent = e.target.value;
         };
         
-        // 应用设置函数
-        window.applySettings = () => {
+        // 绑定应用按钮事件
+        panel.querySelector('#applyBtn').onclick = () => {
             config.darkMode = panel.querySelector('#darkMode').checked;
             config.fontSize = parseInt(panel.querySelector('#fontSize').value);
             config.hideAds = panel.querySelector('#hideAds').checked;
             
             GM_setValue('pageBeautifier_config', config);
-            location.reload();
+            
+            // 移除面板
+            panel.remove();
+            
+            // 重新应用设置（不刷新页面）
+            applyAllSettings();
+        };
+        
+        // 绑定关闭按钮事件
+        panel.querySelector('#closeBtn').onclick = () => {
+            panel.remove();
         };
     }
     
@@ -111,9 +149,7 @@
     
     // 初始化
     function init() {
-        applyDarkMode();
-        applyFontSize();
-        hideAds();
+        applyAllSettings();
         createControlButton();
         
         // 定期检查新的广告元素
