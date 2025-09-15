@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         快捷操作增强
 // @name:en      Quick Actions Enhancer
-// @namespace    https://github.com/yourusername/qmsl
+// @namespace    https://github.com/Lee-zg/qmsl
 // @version      1.0.0
 // @description  为网页添加快捷键、批量操作等效率功能
 // @description:en Add hotkeys, batch operations and other efficiency features to web pages
@@ -11,10 +11,10 @@
 // @grant        GM_getValue
 // @grant        GM_addStyle
 // @license      MIT
-// @supportURL   https://github.com/yourusername/qmsl/issues
-// @homepageURL  https://github.com/yourusername/qmsl
-// @updateURL    https://raw.githubusercontent.com/yourusername/qmsl/main/scripts/productivity-tools/quick-actions.user.js
-// @downloadURL  https://raw.githubusercontent.com/yourusername/qmsl/main/scripts/productivity-tools/quick-actions.user.js
+// @supportURL   https://github.com/Lee-zg/qmsl/issues
+// @homepageURL  https://github.com/Lee-zg/qmsl
+// @updateURL    https://raw.githubusercontent.com/Lee-zg/qmsl/main/scripts/productivity-tools/quick-actions.user.js
+// @downloadURL  https://raw.githubusercontent.com/Lee-zg/qmsl/main/scripts/productivity-tools/quick-actions.user.js
 // ==/UserScript==
 
 (function() {

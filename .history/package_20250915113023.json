@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/qmsl.git"
+    "url": "git+https://github.com/Lee-zg/qmsl.git"
   },
   "keywords": [
     "userscript",
@@ -22,9 +22,9 @@
   "author": "QMSL",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourusername/qmsl/issues"
+    "url": "https://github.com/Lee-zg/qmsl/issues"
   },
-  "homepage": "https://github.com/yourusername/qmsl#readme",
+  "homepage": "https://github.com/Lee-zg/qmsl#readme",
   "devDependencies": {
     "jshint": "^2.13.6"
   }

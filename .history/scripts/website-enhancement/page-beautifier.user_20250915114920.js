@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         页面美化助手
 // @name:en      Page Beautifier
-// @namespace    https://github.com/yourusername/qmsl
+// @namespace    https://github.com/Lee-zg/qmsl
 // @version      1.0.0
 // @description  为网页添加暗黑模式、字体调节、广告屏蔽等美化功能
 // @description:en Add dark mode, font adjustment, ad blocking and other beautification features
@@ -12,10 +12,10 @@
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @license      MIT
-// @supportURL   https://github.com/yourusername/qmsl/issues
-// @homepageURL  https://github.com/yourusername/qmsl
-// @updateURL    https://raw.githubusercontent.com/yourusername/qmsl/main/scripts/website-enhancement/page-beautifier.user.js
-// @downloadURL  https://raw.githubusercontent.com/yourusername/qmsl/main/scripts/website-enhancement/page-beautifier.user.js
+// @supportURL   https://github.com/Lee-zg/qmsl/issues
+// @homepageURL  https://github.com/Lee-zg/qmsl
+// @updateURL    https://raw.githubusercontent.com/Lee-zg/qmsl/main/scripts/website-enhancement/page-beautifier.user.js
+// @downloadURL  https://raw.githubusercontent.com/Lee-zg/qmsl/main/scripts/website-enhancement/page-beautifier.user.js
 // ==/UserScript==
 
 (function() {
