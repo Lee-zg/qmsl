@@ -1,0 +1,124 @@
+# QMSL 项目设置完成！
+
+你的个人油猴脚本库项目已经创建完成。以下是项目的主要特性：
+
+## 📁 项目结构
+
+```
+qmsl/
+├── .github/workflows/          # GitHub Actions 工作流
+│   ├── update-readme.yml      # 自动更新README脚本列表
+│   └── validate-scripts.yml   # 脚本语法验证
+├── docs/                      # 项目文档
+│   ├── installation.md       # 安装指南
+│   ├── development.md        # 开发指南
+│   └── templates/            # 模板文件
+│       └── script-template.md
+├── scripts/                  # 脚本目录
+│   ├── website-enhancement/ # 网站增强脚本
+│   │   ├── page-beautifier.user.js
+│   │   └── README.md
+│   └── productivity-tools/   # 效率工具脚本
+│       ├── quick-actions.user.js
+│       └── README.md
+├── README.md                 # 项目说明
+├── LICENSE                   # MIT许可证
+├── CONTRIBUTING.md          # 贡献指南
+├── package.json            # 项目配置
+└── .gitignore             # Git忽略文件
+```
+
+## 🚀 下一步操作
+
+### 1. 初始化Git仓库
+
+在当前目录下运行以下命令：
+
+```bash
+git init
+git add .
+git commit -m "feat: 初始化QMSL项目"
+```
+
+### 2. 创建GitHub仓库
+
+1. 在GitHub上创建一个新的仓库，名称建议为 `qmsl`
+2. 将本地仓库推送到GitHub：
+
+```bash
+git remote add origin https://github.com/你的用户名/qmsl.git
+git branch -M main
+git push -u origin main
+```
+
+### 3. 更新项目信息
+
+需要将以下文件中的 `yourusername` 替换为你的GitHub用户名：
+
+- `README.md`
+- `package.json`
+- `CONTRIBUTING.md`
+- 所有脚本文件中的URL
+
+### 4. 测试示例脚本
+
+项目包含两个示例脚本：
+
+1. **页面美化助手** (`scripts/website-enhancement/page-beautifier.user.js`)
+   - 提供暗黑模式、字体调节、广告屏蔽等功能
+   - 点击右上角🎨按钮即可使用
+
+2. **快捷操作增强** (`scripts/productivity-tools/quick-actions.user.js`)
+   - 提供各种快捷键功能
+   - 按 `Ctrl+Shift+Q` 查看帮助
+
+### 5. 添加新脚本
+
+1. 在 `scripts/` 目录下创建分类文件夹
+2. 使用 `docs/templates/script-template.md` 作为模板
+3. 确保脚本包含完整的元数据
+4. 添加对应的README文档
+
+## ✨ 特色功能
+
+### 自动化工作流
+
+- **脚本验证**：每次提交时自动检查语法和元数据
+- **README更新**：自动生成和更新脚本列表
+- **版本管理**：支持语义化版本控制
+
+### 规范化结构
+
+- **统一的脚本模板**：确保所有脚本格式一致
+- **完整的文档**：每个脚本都有详细说明
+- **分类管理**：按功能分类组织脚本
+
+### 开发支持
+
+- **开发指南**：详细的脚本开发规范
+- **模板文件**：快速创建新脚本的模板
+- **代码验证**：确保代码质量
+
+## 🛠️ 本地开发
+
+安装依赖（可选）：
+
+```bash
+npm install
+```
+
+验证脚本：
+
+```bash
+npm run validate
+```
+
+## 📄 许可证
+
+本项目使用 MIT 许可证，你可以自由使用、修改和分发。
+
+---
+
+现在你可以开始添加自己的油猴脚本了！记得在每次添加新脚本后提交到GitHub，工作流会自动更新README中的脚本列表。
+
+如果有任何问题，可以查看 `docs/` 目录下的详细文档。

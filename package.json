@@ -1,0 +1,31 @@
+{
+  "name": "qmsl",
+  "version": "1.0.0",
+  "description": "个人油猴脚本库 - Personal Userscript Library",
+  "main": "index.js",
+  "scripts": {
+    "validate": "node scripts/validate.js",
+    "build": "node scripts/build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/qmsl.git"
+  },
+  "keywords": [
+    "userscript",
+    "tampermonkey",
+    "greasemonkey",
+    "browser-extension",
+    "javascript"
+  ],
+  "author": "QMSL",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/qmsl/issues"
+  },
+  "homepage": "https://github.com/yourusername/qmsl#readme",
+  "devDependencies": {
+    "jshint": "^2.13.6"
+  }
+}

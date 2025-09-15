@@ -1,0 +1,89 @@
+# QMSL - QMScript Library
+
+个人油猴脚本库 - 提供各种实用的用户脚本
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/qmsl)](https://github.com/yourusername/qmsl/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/yourusername/qmsl)](https://github.com/yourusername/qmsl/network)
+
+## 📁 项目结构
+
+```
+qmsl/
+├── scripts/                 # 脚本目录
+│   ├── category1/          # 脚本分类目录
+│   │   ├── script1.user.js # 脚本文件
+│   │   └── README.md       # 分类说明
+│   └── category2/
+├── docs/                   # 文档目录
+│   ├── installation.md    # 安装指南
+│   ├── development.md     # 开发指南
+│   └── templates/         # 模板文件
+├── .github/               # GitHub工作流
+│   └── workflows/
+└── README.md              # 项目说明
+```
+
+## 🚀 快速开始
+
+### 安装脚本
+
+1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展
+2. 点击对应脚本的链接直接安装
+3. 或者复制脚本代码手动安装
+
+### 脚本列表
+
+<!-- SCRIPTS_LIST_START -->
+| 脚本名称 | 描述 | 安装 | 更新日期 |
+|---------|------|------|----------|
+| 待添加... | 待添加... | 待添加... | 待添加... |
+<!-- SCRIPTS_LIST_END -->
+
+## 📖 脚本分类
+
+### 🌐 网站增强
+- 各种网站功能增强脚本
+
+### 🎮 娱乐工具
+- 游戏和娱乐相关脚本
+
+### 📚 学习工具
+- 学习和工作效率提升脚本
+
+### 🛒 购物助手
+- 购物网站辅助功能脚本
+
+## 🛠️ 开发指南
+
+### 脚本开发规范
+
+1. 每个脚本必须包含完整的元数据
+2. 代码需要有适当的注释
+3. 必须包含对应的README文档
+4. 遵循统一的命名规范
+
+### 贡献指南
+
+1. Fork 本项目
+2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的修改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启一个 Pull Request
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+
+## ⭐ 支持项目
+
+如果这个项目对你有帮助，请给它一个 ⭐️！
+
+## 📞 联系方式
+
+- 项目主页: [https://github.com/yourusername/qmsl](https://github.com/yourusername/qmsl)
+- 问题反馈: [Issues](https://github.com/yourusername/qmsl/issues)
+
+---
+
+> 声明：所有脚本仅供学习交流使用，请遵守网站服务条款，不要用于非法用途。

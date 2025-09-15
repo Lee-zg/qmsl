@@ -1,0 +1,59 @@
+# 贡献指南
+
+感谢你对 QMSL 项目的关注！我们欢迎任何形式的贡献。
+
+## 如何贡献
+
+### 报告问题
+
+如果你发现了bug或有功能建议：
+
+1. 检查 [Issues](https://github.com/yourusername/qmsl/issues) 确认问题未被报告
+2. 创建新的 Issue，详细描述问题或建议
+3. 提供尽可能多的信息：浏览器版本、脚本版本、错误信息等
+
+### 提交脚本
+
+1. Fork 本项目
+2. 创建新的分支：`git checkout -b feature/script-name`
+3. 按照规范添加你的脚本
+4. 确保代码通过验证
+5. 提交 Pull Request
+
+### 脚本规范
+
+- 文件命名：`script-name.user.js`
+- 必须包含完整的元数据
+- 代码需要有适当注释
+- 添加对应的 README 文档
+
+### 代码风格
+
+- 使用 2 空格缩进
+- 使用分号结尾
+- 变量命名使用 camelCase
+- 常量使用 UPPER_CASE
+
+### 提交信息
+
+使用 [Conventional Commits](https://conventionalcommits.org/) 规范：
+
+- `feat`: 新功能
+- `fix`: 修复bug
+- `docs`: 文档更新
+- `style`: 代码格式
+- `refactor`: 重构
+- `test`: 测试
+- `chore`: 其他
+
+示例：`feat: 添加页面美化脚本`
+
+## 开发环境
+
+1. Clone 项目：`git clone https://github.com/yourusername/qmsl.git`
+2. 安装依赖：`npm install`
+3. 验证脚本：`npm run validate`
+
+## 许可证
+
+贡献的代码将使用 MIT 许可证发布。

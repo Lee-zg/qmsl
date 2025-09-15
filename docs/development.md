@@ -1,0 +1,308 @@
+# 开发指南
+
+## 脚本开发规范
+
+### 文件命名规范
+
+- 脚本文件：`script-name.user.js`
+- 文档文件：`README.md`
+- 使用小写字母和连字符分隔
+
+### 目录结构规范
+
+```
+scripts/
+├── website-enhancement/        # 网站增强类
+│   ├── script1.user.js
+│   └── README.md
+├── productivity-tools/         # 效率工具类
+│   ├── script2.user.js
+│   └── README.md
+└── entertainment/             # 娱乐工具类
+    ├── script3.user.js
+    └── README.md
+```
+
+### 脚本元数据规范
+
+每个脚本必须包含以下元数据：
+
+```javascript
+// ==UserScript==
+// @name         脚本名称
+// @name:en      Script Name (English)
+// @namespace    https://github.com/yourusername/qmsl
+// @version      1.0.0
+// @description  脚本功能描述
+// @description:en Script description in English
+// @author       你的名字
+// @match        https://example.com/*
+// @grant        none
+// @license      MIT
+// @supportURL   https://github.com/yourusername/qmsl/issues
+// @homepageURL  https://github.com/yourusername/qmsl
+// @updateURL    https://raw.githubusercontent.com/yourusername/qmsl/main/scripts/category/script-name.user.js
+// @downloadURL  https://raw.githubusercontent.com/yourusername/qmsl/main/scripts/category/script-name.user.js
+// ==/UserScript==
+```
+
+#### 元数据字段说明
+
+- `@name`: 脚本显示名称（必需）
+- `@namespace`: 命名空间，使用项目URL（必需）
+- `@version`: 版本号，遵循语义化版本（必需）
+- `@description`: 功能描述（必需）
+- `@author`: 作者信息（必需）
+- `@match`: 匹配的网站URL（必需）
+- `@grant`: 所需权限（必需）
+- `@license`: 许可证类型
+- `@supportURL`: 问题反馈地址
+- `@homepageURL`: 项目主页
+- `@updateURL`: 更新检查地址
+- `@downloadURL`: 下载地址
+
+### 代码编写规范
+
+#### 1. 代码结构
+
+```javascript
+// ==UserScript==
+// 元数据...
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    
+    // 全局变量
+    const CONFIG = {
+        // 配置项
+    };
+    
+    // 工具函数
+    function utils() {
+        // 工具方法
+    }
+    
+    // 主要功能
+    function main() {
+        // 主要逻辑
+    }
+    
+    // 初始化
+    function init() {
+        // 页面加载完成后执行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', main);
+        } else {
+            main();
+        }
+    }
+    
+    // 启动脚本
+    init();
+})();
+```
+
+#### 2. 编码规范
+
+- 使用严格模式 `'use strict'`
+- 使用IIFE包装避免全局污染
+- 使用有意义的变量和函数名
+- 添加适当的注释
+- 错误处理和边界检查
+
+#### 3. 性能优化
+
+- 避免频繁的DOM操作
+- 使用事件委托
+- 合理使用缓存
+- 避免阻塞主线程
+
+### 权限管理
+
+#### 常用权限
+
+```javascript
+// @grant        none                    // 无特殊权限
+// @grant        GM_setValue             // 存储数据
+// @grant        GM_getValue             // 读取数据
+// @grant        GM_xmlhttpRequest       // 跨域请求
+// @grant        GM_addStyle             // 添加样式
+// @grant        GM_notification         // 显示通知
+// @grant        GM_openInTab            // 新标签页打开
+// @grant        GM_registerMenuCommand  // 注册菜单命令
+```
+
+### 兼容性处理
+
+#### 浏览器兼容
+
+```javascript
+// 检查浏览器特性
+if (!document.querySelector) {
+    console.error('浏览器不支持querySelector');
+    return;
+}
+
+// 使用Polyfill
+if (!Array.prototype.includes) {
+    // 添加polyfill
+}
+```
+
+#### 脚本管理器兼容
+
+```javascript
+// 检查Tampermonkey/Greasemonkey
+if (typeof GM_info !== 'undefined') {
+    console.log('脚本管理器:', GM_info.scriptHandler);
+}
+```
+
+## 测试指南
+
+### 本地测试
+
+1. 在本地创建HTML测试页面
+2. 使用开发者工具调试
+3. 测试不同浏览器兼容性
+
+### 脚本测试
+
+```javascript
+// 添加调试模式
+const DEBUG = true;
+
+function log(...args) {
+    if (DEBUG) {
+        console.log('[ScriptName]', ...args);
+    }
+}
+
+// 错误处理
+try {
+    // 主要逻辑
+} catch (error) {
+    console.error('[ScriptName] Error:', error);
+}
+```
+
+## 文档编写
+
+### README.md 模板
+
+每个脚本目录都应该包含README.md文件：
+
+```markdown
+# 脚本分类名称
+
+这里是脚本分类的描述...
+
+## 脚本列表
+
+### 脚本1名称
+
+**功能描述**：功能的详细描述
+
+**适用网站**：
+- https://example1.com
+- https://example2.com
+
+**安装**：[点击安装](链接)
+
+**使用方法**：
+1. 打开目标网站
+2. 脚本会自动运行
+3. 可以通过xx方式打开设置
+
+**更新日志**：
+- v1.0.0: 初始版本
+```
+
+### 脚本内文档
+
+```javascript
+/**
+ * 脚本主要功能描述
+ * 
+ * @author 作者名称
+ * @version 1.0.0
+ * @since 2025-01-01
+ */
+
+/**
+ * 初始化配置
+ * @param {Object} options 配置选项
+ * @param {string} options.theme 主题设置
+ * @param {boolean} options.autoStart 是否自动启动
+ */
+function initConfig(options) {
+    // 实现...
+}
+```
+
+## 发布流程
+
+### 1. 代码提交
+
+```bash
+git add .
+git commit -m "feat: 添加新脚本 - 脚本名称"
+git push origin main
+```
+
+### 2. 版本标签
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+### 3. 自动化
+
+- GitHub Actions会自动验证脚本语法
+- 自动更新README中的脚本列表
+- 自动检查必需的元数据
+
+## 贡献指南
+
+### 提交规范
+
+使用Conventional Commits规范：
+
+- `feat`: 新功能
+- `fix`: Bug修复
+- `docs`: 文档更新
+- `style`: 代码格式调整
+- `refactor`: 代码重构
+- `test`: 测试相关
+- `chore`: 其他杂项
+
+### Pull Request
+
+1. Fork本项目
+2. 创建feature分支
+3. 完成开发和测试
+4. 提交Pull Request
+5. 等待代码审查
+
+## 工具推荐
+
+### 开发工具
+
+- **VSCode**: 推荐的代码编辑器
+- **Tampermonkey**: 脚本调试和测试
+- **Chrome DevTools**: 浏览器调试工具
+
+### VSCode扩展
+
+- JavaScript (ES6) code snippets
+- Prettier - Code formatter
+- ESLint
+- Userscript Header
+
+### 在线工具
+
+- [JSHint](https://jshint.com/): JavaScript语法检查
+- [Beautifier](https://beautifier.io/): 代码格式化
+- [RegExr](https://regexr.com/): 正则表达式测试
