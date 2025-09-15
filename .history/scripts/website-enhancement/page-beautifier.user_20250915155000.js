@@ -573,44 +573,11 @@
     
     // 初始化
     function init() {
-        console.log('🎨 页面美化助手已启动', `当前网站: ${currentDomain}`);
-        
-        // 添加防干扰样式
-        addProtectionStyles();
-        
-        // 应用设置
         applyAllSettings();
-        
-        // 创建控制按钮
         createControlButton();
         
         // 定期检查新的广告元素
-        setInterval(hideAds, 5000);
-        
-        // 监听页面变化
-        const observer = new MutationObserver((mutations) => {
-            let needRecheck = false;
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    needRecheck = true;
-                }
-            });
-            
-            if (needRecheck) {
-                setTimeout(() => {
-                    hideAds();
-                    // 确保按钮仍然存在
-                    if (!document.getElementById('pageBeautifierBtn')) {
-                        createControlButton();
-                    }
-                }, 1000);
-            }
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+        setInterval(hideAds, 3000);
     }
     
     // 启动
