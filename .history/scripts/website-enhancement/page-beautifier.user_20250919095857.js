@@ -853,275 +853,91 @@
         bindPanelEvents(panel);
     }
     
-    // 添加面板拖拽功能
-    function addPanelDragFunctionality(panel) {
-        const header = panel.querySelector('.panel-header');
-        if (!header) return;
+    // 绑定面板事件
+    function bindPanelEvents(panel) {
+        // 字体大小实时更新
+        panel.querySelector('#fontSize').oninput = (e) => {
+            panel.querySelector('#fontSizeValue').textContent = e.target.value;
+        };
         
-        let isDraggingPanel = false;
-        let panelStartX, panelStartY, panelInitialX, panelInitialY;
+        // 关闭按钮
+        panel.querySelector('#closeBtn').onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            panel.remove();
+        };
         
-        header.addEventListener('mousedown', initPanelDrag);
-        header.addEventListener('touchstart', initPanelDrag, { passive: false });
-        
-        function initPanelDrag(e) {
+        // 应用设置
+        panel.querySelector('#applyBtn').onclick = (e) => {
             e.preventDefault();
             e.stopPropagation();
             
-            isDraggingPanel = true;
-            panel.classList.add('dragging');
-            header.classList.add('dragging');
+            // 更新配置
+            config.darkMode = panel.querySelector('#darkMode').checked;
+            config.fontSize = parseInt(panel.querySelector('#fontSize').value);
+            config.readingMode = panel.querySelector('#readingMode').checked;
+            config.hideAds = panel.querySelector('#hideAds').checked;
+            config.customCSS = panel.querySelector('#customCSS').value;
             
-            const clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
-            const clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+            // 保存配置
+            saveSiteConfig(config);
             
-            const rect = panel.getBoundingClientRect();
-            panelStartX = clientX;
-            panelStartY = clientY;
-            panelInitialX = rect.left + window.scrollX;
-            panelInitialY = rect.top + window.scrollY;
+            // 显示成功提示
+            showNotification('✅ 设置已应用', 'success');
             
-            document.addEventListener('mousemove', performPanelDrag);
-            document.addEventListener('touchmove', performPanelDrag, { passive: false });
-            document.addEventListener('mouseup', endPanelDrag);
-            document.addEventListener('touchend', endPanelDrag);
+            // 移除面板
+            panel.remove();
             
-            document.body.style.userSelect = 'none';
-        }
-        
-        function performPanelDrag(e) {
-            if (!isDraggingPanel) return;
-            
-            e.preventDefault();
-            
-            const clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
-            const clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
-            
-            const deltaX = clientX - panelStartX;
-            const deltaY = clientY - panelStartY;
-            
-            const newX = Math.max(0, Math.min(window.innerWidth - panel.offsetWidth, panelInitialX + deltaX));
-            const newY = Math.max(0, Math.min(window.innerHeight - panel.offsetHeight, panelInitialY + deltaY));
-            
-            panel.style.left = newX + 'px';
-            panel.style.top = newY + 'px';
-            panel.style.transform = 'none';
-        }
-        
-        function endPanelDrag() {
-            isDraggingPanel = false;
-            panel.classList.remove('dragging');
-            header.classList.remove('dragging');
-            
-            document.removeEventListener('mousemove', performPanelDrag);
-            document.removeEventListener('touchmove', performPanelDrag);
-            document.removeEventListener('mouseup', endPanelDrag);
-            document.removeEventListener('touchend', endPanelDrag);
-            
-            document.body.style.userSelect = '';
-        }
-    }
-    
-    // 绑定面板事件
-    function bindPanelEvents(panel) {
-        // 实时数值更新
-        const rangeInputs = {
-            fontSize: panel.querySelector('#fontSize'),
-            pageZoom: panel.querySelector('#pageZoom'),
-            lineHeight: panel.querySelector('#lineHeight')
+            // 重新应用设置
+            applyAllSettings();
         };
         
-        Object.entries(rangeInputs).forEach(([key, element]) => {
-            if (element) {
-                element.oninput = (e) => {
-                    const valueSpan = panel.querySelector(`#${key}Value`);
-                    if (valueSpan) {
-                        valueSpan.textContent = e.target.value;
-                    }
-                };
-            }
-        });
-        
-        // 关闭按钮
-        const closeBtn = panel.querySelector('#closeBtn');
-        if (closeBtn) {
-            closeBtn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (config.enableAnimations) {
-                    panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                    setTimeout(() => panel.remove(), 300);
-                } else {
-                    panel.remove();
-                }
-            };
+        // 重置设置
+        panel.querySelector('#resetBtn').onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             
-            closeBtn.onmouseenter = () => {
-                closeBtn.style.background = 'rgba(255,255,255,0.3)';
-                closeBtn.style.transform = 'scale(1.1)';
-            };
-            
-            closeBtn.onmouseleave = () => {
-                closeBtn.style.background = 'rgba(255,255,255,0.2)';
-                closeBtn.style.transform = 'scale(1)';
-            };
-        }
-        
-        // 应用设置
-        const applyBtn = panel.querySelector('#applyBtn');
-        if (applyBtn) {
-            applyBtn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // 更新配置
-                config.darkMode = panel.querySelector('#darkMode')?.checked || false;
-                config.fontSize = parseInt(panel.querySelector('#fontSize')?.value || 16);
-                config.readingMode = panel.querySelector('#readingMode')?.checked || false;
-                config.hideAds = panel.querySelector('#hideAds')?.checked || false;
-                config.customCSS = panel.querySelector('#customCSS')?.value || '';
-                config.blurBackground = panel.querySelector('#blurBackground')?.checked || false;
-                config.focusMode = panel.querySelector('#focusMode')?.checked || false;
-                config.enableAnimations = panel.querySelector('#enableAnimations')?.checked || false;
-                config.buttonVisible = panel.querySelector('#buttonVisible')?.checked || false;
-                config.hideImages = panel.querySelector('#hideImages')?.checked || false;
-                config.pageZoom = parseInt(panel.querySelector('#pageZoom')?.value || 100);
-                config.lineHeight = parseFloat(panel.querySelector('#lineHeight')?.value || 1.5);
-                config.colorScheme = panel.querySelector('#colorScheme')?.value || 'auto';
-                
-                // 保存配置
+            if (confirm('确定要重置当前网站的所有设置吗？')) {
+                // 重置为默认配置
+                config = { ...DEFAULT_CONFIG };
                 saveSiteConfig(config);
                 
                 // 显示成功提示
-                showNotification('✅ 设置已应用并保存', 'success');
+                showNotification('✅ 设置已重置', 'success');
                 
                 // 移除面板
-                if (config.enableAnimations) {
-                    panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                    setTimeout(() => panel.remove(), 300);
-                } else {
-                    panel.remove();
-                }
+                panel.remove();
                 
                 // 重新应用设置
-                setTimeout(() => {
-                    addProtectionStyles(); // 重新添加保护样式
-                    applyAllSettings();
-                    
-                    // 更新按钮显示状态
-                    const button = document.getElementById('pageBeautifierBtn');
-                    if (button && !config.buttonVisible) {
-                        button.style.display = 'none';
-                    } else if (button && config.buttonVisible) {
-                        button.style.display = 'flex';
-                    }
-                }, 100);
-            };
-        }
-        
-        // 重置设置
-        const resetBtn = panel.querySelector('#resetBtn');
-        if (resetBtn) {
-            resetBtn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (confirm('确定要重置当前网站的所有设置吗？')) {
-                    // 重置为默认配置
-                    config = { ...DEFAULT_CONFIG };
-                    saveSiteConfig(config);
-                    
-                    // 显示成功提示
-                    showNotification('✅ 设置已重置', 'success');
-                    
-                    // 移除面板
-                    if (config.enableAnimations) {
-                        panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                        setTimeout(() => panel.remove(), 300);
-                    } else {
-                        panel.remove();
-                    }
-                    
-                    // 重新应用设置
-                    setTimeout(() => {
-                        addProtectionStyles();
-                        applyAllSettings();
-                    }, 100);
-                }
-            };
-        }
+                applyAllSettings();
+            }
+        };
         
         // 导出设置
-        const exportBtn = panel.querySelector('#exportBtn');
-        if (exportBtn) {
-            exportBtn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const exportData = {
-                    domain: currentDomain,
-                    config: config,
-                    version: '2.0.0',
-                    timestamp: new Date().toISOString()
-                };
-                
-                const dataStr = JSON.stringify(exportData, null, 2);
-                const blob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `pageBeautifier_${currentDomain}_${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                showNotification('📤 设置已导出', 'success');
+        panel.querySelector('#exportBtn').onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const exportData = {
+                domain: currentDomain,
+                config: config,
+                timestamp: new Date().toISOString()
             };
-        }
-        
-        // 导入设置
-        const importBtn = panel.querySelector('#importBtn');
-        if (importBtn) {
-            importBtn.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = '.json';
-                input.onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            try {
-                                const importData = JSON.parse(e.target.result);
-                                if (importData.config) {
-                                    config = { ...DEFAULT_CONFIG, ...importData.config };
-                                    saveSiteConfig(config);
-                                    showNotification('✅ 设置已导入', 'success');
-                                    
-                                    // 关闭面板并重新应用
-                                    panel.remove();
-                                    setTimeout(() => {
-                                        addProtectionStyles();
-                                        applyAllSettings();
-                                    }, 100);
-                                } else {
-                                    showNotification('❌ 无效的配置文件', 'error');
-                                }
-                            } catch (err) {
-                                showNotification('❌ 文件解析失败', 'error');
-                            }
-                        };
-                        reader.readAsText(file);
-                    }
-                };
-                input.click();
-            };
-        }
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pageBeautifier_${currentDomain}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('📤 设置已导出', 'success');
+        };
         
         // 面板点击事件
         panel.onclick = (e) => {
@@ -1131,12 +947,7 @@
         // 点击面板外部关闭
         document.addEventListener('click', function closePanel(e) {
             if (!panel.contains(e.target)) {
-                if (config.enableAnimations) {
-                    panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                    setTimeout(() => panel.remove(), 300);
-                } else {
-                    panel.remove();
-                }
+                panel.remove();
                 document.removeEventListener('click', closePanel);
             }
         });
@@ -1185,7 +996,7 @@
     
     // 初始化
     function init() {
-        console.log('🎨 页面美化助手 v2.0 已启动', `当前网站: ${currentDomain}`);
+        console.log('🎨 页面美化助手已启动', `当前网站: ${currentDomain}`);
         
         // 添加防干扰样式
         addProtectionStyles();
@@ -1196,14 +1007,8 @@
         // 创建控制按钮
         createControlButton();
         
-        // 添加全局键盘快捷键
-        addKeyboardShortcuts();
-        
         // 定期检查新的广告元素
-        setInterval(() => {
-            if (config.hideAds) hideAds();
-            if (config.hideImages) hideImages();
-        }, 5000);
+        setInterval(hideAds, 5000);
         
         // 监听页面变化
         const observer = new MutationObserver((mutations) => {
@@ -1216,11 +1021,9 @@
             
             if (needRecheck) {
                 setTimeout(() => {
-                    if (config.hideAds) hideAds();
-                    if (config.hideImages) hideImages();
-                    
+                    hideAds();
                     // 确保按钮仍然存在
-                    if (!document.getElementById('pageBeautifierBtn') && config.buttonVisible) {
+                    if (!document.getElementById('pageBeautifierBtn')) {
                         createControlButton();
                     }
                 }, 1000);
@@ -1230,62 +1033,6 @@
         observer.observe(document.body, {
             childList: true,
             subtree: true
-        });
-        
-        // 欢迎提示
-        setTimeout(() => {
-            if (config.enableAnimations && config.buttonVisible) {
-                showNotification('🎨 页面美化助手 v2.0 已就绪！右键按钮可快速隐藏', 'info', 3000);
-            }
-        }, 2000);
-    }
-    
-    // 添加全局键盘快捷键
-    function addKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            // Alt + B: 切换按钮显示/隐藏
-            if (e.altKey && e.code === 'KeyB') {
-                e.preventDefault();
-                toggleButtonVisibility();
-            }
-            
-            // Alt + D: 快速切换暗黑模式
-            if (e.altKey && e.code === 'KeyD') {
-                e.preventDefault();
-                config.darkMode = !config.darkMode;
-                saveSiteConfig(config);
-                applyAllSettings();
-                showNotification(`🌙 暗黑模式已${config.darkMode ? '开启' : '关闭'}`, 'info');
-            }
-            
-            // Alt + R: 快速切换阅读模式
-            if (e.altKey && e.code === 'KeyR') {
-                e.preventDefault();
-                config.readingMode = !config.readingMode;
-                saveSiteConfig(config);
-                applyAllSettings();
-                showNotification(`📚 阅读模式已${config.readingMode ? '开启' : '关闭'}`, 'info');
-            }
-            
-            // Alt + S: 快速打开设置面板
-            if (e.altKey && e.code === 'KeyS') {
-                e.preventDefault();
-                showSettingsPanel();
-            }
-            
-            // Esc: 关闭设置面板
-            if (e.code === 'Escape') {
-                const panel = document.getElementById('pageBeautifierPanel');
-                if (panel) {
-                    e.preventDefault();
-                    if (config.enableAnimations) {
-                        panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                        setTimeout(() => panel.remove(), 300);
-                    } else {
-                        panel.remove();
-                    }
-                }
-            }
         });
     }
     

@@ -1185,7 +1185,7 @@
     
     // 初始化
     function init() {
-        console.log('🎨 页面美化助手 v2.0 已启动', `当前网站: ${currentDomain}`);
+        console.log('🎨 页面美化助手已启动', `当前网站: ${currentDomain}`);
         
         // 添加防干扰样式
         addProtectionStyles();
@@ -1196,14 +1196,8 @@
         // 创建控制按钮
         createControlButton();
         
-        // 添加全局键盘快捷键
-        addKeyboardShortcuts();
-        
         // 定期检查新的广告元素
-        setInterval(() => {
-            if (config.hideAds) hideAds();
-            if (config.hideImages) hideImages();
-        }, 5000);
+        setInterval(hideAds, 5000);
         
         // 监听页面变化
         const observer = new MutationObserver((mutations) => {
@@ -1216,11 +1210,9 @@
             
             if (needRecheck) {
                 setTimeout(() => {
-                    if (config.hideAds) hideAds();
-                    if (config.hideImages) hideImages();
-                    
+                    hideAds();
                     // 确保按钮仍然存在
-                    if (!document.getElementById('pageBeautifierBtn') && config.buttonVisible) {
+                    if (!document.getElementById('pageBeautifierBtn')) {
                         createControlButton();
                     }
                 }, 1000);
@@ -1230,62 +1222,6 @@
         observer.observe(document.body, {
             childList: true,
             subtree: true
-        });
-        
-        // 欢迎提示
-        setTimeout(() => {
-            if (config.enableAnimations && config.buttonVisible) {
-                showNotification('🎨 页面美化助手 v2.0 已就绪！右键按钮可快速隐藏', 'info', 3000);
-            }
-        }, 2000);
-    }
-    
-    // 添加全局键盘快捷键
-    function addKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            // Alt + B: 切换按钮显示/隐藏
-            if (e.altKey && e.code === 'KeyB') {
-                e.preventDefault();
-                toggleButtonVisibility();
-            }
-            
-            // Alt + D: 快速切换暗黑模式
-            if (e.altKey && e.code === 'KeyD') {
-                e.preventDefault();
-                config.darkMode = !config.darkMode;
-                saveSiteConfig(config);
-                applyAllSettings();
-                showNotification(`🌙 暗黑模式已${config.darkMode ? '开启' : '关闭'}`, 'info');
-            }
-            
-            // Alt + R: 快速切换阅读模式
-            if (e.altKey && e.code === 'KeyR') {
-                e.preventDefault();
-                config.readingMode = !config.readingMode;
-                saveSiteConfig(config);
-                applyAllSettings();
-                showNotification(`📚 阅读模式已${config.readingMode ? '开启' : '关闭'}`, 'info');
-            }
-            
-            // Alt + S: 快速打开设置面板
-            if (e.altKey && e.code === 'KeyS') {
-                e.preventDefault();
-                showSettingsPanel();
-            }
-            
-            // Esc: 关闭设置面板
-            if (e.code === 'Escape') {
-                const panel = document.getElementById('pageBeautifierPanel');
-                if (panel) {
-                    e.preventDefault();
-                    if (config.enableAnimations) {
-                        panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                        setTimeout(() => panel.remove(), 300);
-                    } else {
-                        panel.remove();
-                    }
-                }
-            }
         });
     }
     
