@@ -10,6 +10,7 @@ Thumbs.db
 # 编辑器和IDE
 .vscode/
 .idea/
+.history/
 *.swp
 *.swo
 *~

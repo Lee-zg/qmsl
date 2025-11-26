@@ -77,7 +77,9 @@
         
         stylesToRemove.forEach(id => {
             const style = document.getElementById(id);
-            if (style) style.remove();
+            if (style && style.parentNode) {
+                style.parentNode.removeChild(style);
+            }
         });
         
         // 重新应用设置
@@ -100,8 +102,16 @@
             const style = document.createElement('style');
             style.id = 'pageBeautifier-dark-style';
             style.textContent = `
-                html { filter: invert(1) hue-rotate(180deg) !important; }
-                img, video, iframe, svg, canvas, embed, object { 
+                html:not(#pageBeautifierBtn):not(#pageBeautifierPanel) { 
+                    filter: invert(1) hue-rotate(180deg) !important; 
+                }
+                img:not(#pageBeautifierBtn *):not(#pageBeautifierPanel *), 
+                video:not(#pageBeautifierBtn *):not(#pageBeautifierPanel *), 
+                iframe:not(#pageBeautifierBtn *):not(#pageBeautifierPanel *), 
+                svg:not(#pageBeautifierBtn *):not(#pageBeautifierPanel *), 
+                canvas:not(#pageBeautifierBtn *):not(#pageBeautifierPanel *), 
+                embed:not(#pageBeautifierBtn *):not(#pageBeautifierPanel *), 
+                object:not(#pageBeautifierBtn *):not(#pageBeautifierPanel *) { 
                     filter: invert(1) hue-rotate(180deg) !important; 
                 }
                 /* 保持控制按钮和设置面板正常显示 */
@@ -118,9 +128,8 @@
         const style = document.createElement('style');
         style.id = 'pageBeautifier-font-style';
         style.textContent = `
-            body, body * {
+            body, body *, p, span, div, a, li, td, th {
                 font-size: ${config.fontSize}px !important;
-                line-height: 1.5 !important;
             }
             h1 { font-size: ${config.fontSize * 2}px !important; }
             h2 { font-size: ${config.fontSize * 1.8}px !important; }
@@ -128,6 +137,10 @@
             h4 { font-size: ${config.fontSize * 1.4}px !important; }
             h5 { font-size: ${config.fontSize * 1.2}px !important; }
             h6 { font-size: ${config.fontSize * 1.1}px !important; }
+            /* 保持控制按钮和面板不受影响 */
+            #pageBeautifierBtn, #pageBeautifierPanel * {
+                font-size: initial !important;
+            }
         `;
         document.head.appendChild(style);
     }
@@ -202,8 +215,12 @@
             };
             if (schemes[config.colorScheme]) {
                 style.textContent = `
-                    html {
+                    html:not(#pageBeautifierBtn):not(#pageBeautifierPanel) {
                         filter: ${schemes[config.colorScheme]} !important;
+                    }
+                    /* 保持控制按钮和面板正常显示 */
+                    #pageBeautifierBtn, #pageBeautifierPanel {
+                        filter: none !important;
                     }
                 `;
                 document.head.appendChild(style);
@@ -216,10 +233,14 @@
         if (config.pageZoom !== 100) {
             const style = document.createElement('style');
             style.id = 'pageBeautifier-zoom-style';
+            const zoomValue = config.pageZoom / 100;
             style.textContent = `
-                body {
-                    zoom: ${config.pageZoom / 100} !important;
-                    transform-origin: top left !important;
+                html {
+                    zoom: ${zoomValue} !important;
+                }
+                /* 保持控制按钮和面板不受影响 */
+                #pageBeautifierBtn, #pageBeautifierPanel {
+                    zoom: ${1 / zoomValue} !important;
                 }
             `;
             document.head.appendChild(style);
@@ -231,8 +252,12 @@
         const style = document.createElement('style');
         style.id = 'pageBeautifier-lineheight-style';
         style.textContent = `
-            body, body * {
+            body, body *, p, div, span, li, td, th {
                 line-height: ${config.lineHeight} !important;
+            }
+            /* 保持控制按钮和面板不受影响 */
+            #pageBeautifierBtn, #pageBeautifierPanel * {
+                line-height: initial !important;
             }
         `;
         document.head.appendChild(style);
@@ -244,8 +269,13 @@
             const style = document.createElement('style');
             style.id = 'pageBeautifier-hideimg-style';
             style.textContent = `
-                img, video, canvas, svg, picture {
+                img:not(#pageBeautifierBtn):not(#pageBeautifierPanel img), 
+                video, canvas, svg:not(#pageBeautifierPanel svg), picture {
                     display: none !important;
+                }
+                /* 保持控制按钮和面板中的图标不被隐藏 */
+                #pageBeautifierBtn *, #pageBeautifierPanel * {
+                    display: initial !important;
                 }
             `;
             document.head.appendChild(style);
@@ -258,16 +288,25 @@
             const style = document.createElement('style');
             style.id = 'pageBeautifier-focus-style';
             style.textContent = `
-                body * {
+                body *:not(#pageBeautifierBtn):not(#pageBeautifierPanel):not(#pageBeautifierPanel *) {
                     transition: opacity 0.3s ease !important;
                 }
-                body *:not(:hover):not(:focus):not(:focus-within) {
+                body *:not(#pageBeautifierBtn):not(#pageBeautifierPanel):not(#pageBeautifierPanel *):not(:hover):not(:focus):not(:focus-within) {
                     opacity: 0.6 !important;
                 }
-                body *:hover, body *:focus, body *:focus-within {
+                body *:not(#pageBeautifierBtn):not(#pageBeautifierPanel):not(#pageBeautifierPanel *):hover, 
+                body *:not(#pageBeautifierBtn):not(#pageBeautifierPanel):not(#pageBeautifierPanel *):focus, 
+                body *:not(#pageBeautifierBtn):not(#pageBeautifierPanel):not(#pageBeautifierPanel *):focus-within {
                     opacity: 1 !important;
                     transform: scale(1.02) !important;
                     transition: all 0.3s ease !important;
+                    z-index: 10 !important;
+                    position: relative !important;
+                }
+                /* 保持控制按钮和面板不受影响 */
+                #pageBeautifierBtn, #pageBeautifierPanel, #pageBeautifierPanel * {
+                    opacity: 1 !important;
+                    transform: none !important;
                 }
             `;
             document.head.appendChild(style);
@@ -276,27 +315,32 @@
     
     // 隐藏广告
     function hideAds() {
-        if (config.hideAds) {
-            const adSelectors = [
-                '[class*="ad"]', '[class*="advertisement"]', '[id*="ad"]',
-                '[class*="banner"]', '[class*="popup"]', '[class*="modal"]',
-                '.google-ads', '.adsense', '.ad-container', '.advertisement',
-                'iframe[src*="googleadservices"]', 'iframe[src*="googlesyndication"]'
-            ];
-            
-            adSelectors.forEach(selector => {
-                try {
-                    document.querySelectorAll(selector).forEach(el => {
-                        // 保持我们的控件不被隐藏
-                        if (!el.id || (!el.id.includes('pageBeautifier'))) {
-                            el.style.display = 'none';
-                        }
-                    });
-                } catch (e) {
-                    // 忽略无效选择器错误
-                }
-            });
-        }
+        if (!config.hideAds) return;
+        
+        const adSelectors = [
+            '[class*="ad"]:not(#pageBeautifierBtn):not(#pageBeautifierPanel)', 
+            '[class*="advertisement"]:not(#pageBeautifierBtn):not(#pageBeautifierPanel)', 
+            '[id*="ad"]:not(#pageBeautifierBtn):not(#pageBeautifierPanel)',
+            '[class*="banner"]:not(#pageBeautifierBtn):not(#pageBeautifierPanel)', 
+            '[class*="popup"]:not(#pageBeautifierBtn):not(#pageBeautifierPanel)', 
+            '[class*="modal"]:not(#pageBeautifierBtn):not(#pageBeautifierPanel)',
+            '.google-ads', '.adsense', '.ad-container', '.advertisement',
+            'iframe[src*="googleadservices"]', 'iframe[src*="googlesyndication"]'
+        ];
+        
+        adSelectors.forEach(selector => {
+            try {
+                document.querySelectorAll(selector).forEach(el => {
+                    // 确保不隐藏我们的控件
+                    if (!el.id || (!el.id.includes('pageBeautifier') && !el.closest('#pageBeautifierBtn') && !el.closest('#pageBeautifierPanel'))) {
+                        el.style.display = 'none';
+                    }
+                });
+            } catch (e) {
+                // 忽略无效选择器错误
+                console.debug('Ad selector error:', selector, e);
+            }
+        });
     }
     
     // 添加防干扰样式
@@ -578,7 +622,7 @@
         
         // 隐藏时显示提示
         if (!config.buttonVisible) {
-            showNotification('👁️ 按钮Alt+B可重新显示控制按钮', 'info', 5000);
+            showNotification('👁️ 按Alt+B可重新显示控制按钮', 'info', 5000);
         }
     }
     
@@ -589,9 +633,15 @@
         if (existingPanel) {
             if (config.enableAnimations) {
                 existingPanel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                setTimeout(() => existingPanel.remove(), 300);
+                setTimeout(() => {
+                    if (existingPanel.parentNode) {
+                        existingPanel.parentNode.removeChild(existingPanel);
+                    }
+                }, 300);
             } else {
-                existingPanel.remove();
+                if (existingPanel.parentNode) {
+                    existingPanel.parentNode.removeChild(existingPanel);
+                }
             }
             return;
         }
@@ -950,9 +1000,15 @@
                 e.stopPropagation();
                 if (config.enableAnimations) {
                     panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                    setTimeout(() => panel.remove(), 300);
+                    setTimeout(() => {
+                        if (panel.parentNode) {
+                            panel.parentNode.removeChild(panel);
+                        }
+                    }, 300);
                 } else {
-                    panel.remove();
+                    if (panel.parentNode) {
+                        panel.parentNode.removeChild(panel);
+                    }
                 }
             };
             
@@ -998,9 +1054,15 @@
                 // 移除面板
                 if (config.enableAnimations) {
                     panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                    setTimeout(() => panel.remove(), 300);
+                    setTimeout(() => {
+                        if (panel.parentNode) {
+                            panel.parentNode.removeChild(panel);
+                        }
+                    }, 300);
                 } else {
-                    panel.remove();
+                    if (panel.parentNode) {
+                        panel.parentNode.removeChild(panel);
+                    }
                 }
                 
                 // 重新应用设置
@@ -1037,9 +1099,15 @@
                     // 移除面板
                     if (config.enableAnimations) {
                         panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                        setTimeout(() => panel.remove(), 300);
+                        setTimeout(() => {
+                            if (panel.parentNode) {
+                                panel.parentNode.removeChild(panel);
+                            }
+                        }, 300);
                     } else {
-                        panel.remove();
+                        if (panel.parentNode) {
+                            panel.parentNode.removeChild(panel);
+                        }
                     }
                     
                     // 重新应用设置
@@ -1104,7 +1172,9 @@
                                     showNotification('✅ 设置已导入', 'success');
                                     
                                     // 关闭面板并重新应用
-                                    panel.remove();
+                                    if (panel.parentNode) {
+                                        panel.parentNode.removeChild(panel);
+                                    }
                                     setTimeout(() => {
                                         addProtectionStyles();
                                         applyAllSettings();
@@ -1129,21 +1199,32 @@
         };
         
         // 点击面板外部关闭
-        document.addEventListener('click', function closePanel(e) {
-            if (!panel.contains(e.target)) {
+        const closeOnOutsideClick = function(e) {
+            if (!panel.contains(e.target) && e.target !== panel) {
                 if (config.enableAnimations) {
                     panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                    setTimeout(() => panel.remove(), 300);
+                    setTimeout(() => {
+                        if (panel.parentNode) {
+                            panel.parentNode.removeChild(panel);
+                        }
+                    }, 300);
                 } else {
-                    panel.remove();
+                    if (panel.parentNode) {
+                        panel.parentNode.removeChild(panel);
+                    }
                 }
-                document.removeEventListener('click', closePanel);
+                document.removeEventListener('click', closeOnOutsideClick);
             }
-        });
+        };
+        
+        // 延迟添加事件监听器，避免立即触发
+        setTimeout(() => {
+            document.addEventListener('click', closeOnOutsideClick);
+        }, 100);
     }
     
     // 显示通知
-    function showNotification(message, type = 'info') {
+    function showNotification(message, type = 'info', duration = 3000) {
         const notification = document.createElement('div');
         notification.style.cssText = `
             position: fixed;
@@ -1159,6 +1240,9 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             transform: translateX(100%);
             transition: transform 0.3s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 300px;
+            word-wrap: break-word;
         `;
         notification.textContent = message;
         
@@ -1169,7 +1253,7 @@
             notification.style.transform = 'translateX(0)';
         }, 100);
         
-        // 3秒后隐藏
+        // 指定时间后隐藏
         setTimeout(() => {
             notification.style.transform = 'translateX(100%)';
             setTimeout(() => {
@@ -1177,7 +1261,7 @@
                     notification.parentNode.removeChild(notification);
                 }
             }, 300);
-        }, 3000);
+        }, duration);
     }
     
     // 注册菜单命令
@@ -1187,57 +1271,82 @@
     function init() {
         console.log('🎨 页面美化助手 v2.0 已启动', `当前网站: ${currentDomain}`);
         
-        // 添加防干扰样式
-        addProtectionStyles();
-        
-        // 应用设置
-        applyAllSettings();
-        
-        // 创建控制按钮
-        createControlButton();
-        
-        // 添加全局键盘快捷键
-        addKeyboardShortcuts();
-        
-        // 定期检查新的广告元素
-        setInterval(() => {
-            if (config.hideAds) hideAds();
-            if (config.hideImages) hideImages();
-        }, 5000);
-        
-        // 监听页面变化
-        const observer = new MutationObserver((mutations) => {
-            let needRecheck = false;
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    needRecheck = true;
-                }
-            });
-            
-            if (needRecheck) {
-                setTimeout(() => {
-                    if (config.hideAds) hideAds();
-                    if (config.hideImages) hideImages();
-                    
-                    // 确保按钮仍然存在
-                    if (!document.getElementById('pageBeautifierBtn') && config.buttonVisible) {
-                        createControlButton();
+        // 等待DOM完全加载
+        const initAfterDOM = () => {
+            try {
+                // 添加防干扰样式
+                addProtectionStyles();
+                
+                // 应用设置
+                applyAllSettings();
+                
+                // 创建控制按钮
+                createControlButton();
+                
+                // 添加全局键盘快捷键
+                addKeyboardShortcuts();
+                
+                // 定期检查新的广告元素
+                const intervalId = setInterval(() => {
+                    try {
+                        if (config.hideAds) hideAds();
+                        if (config.hideImages) hideImages();
+                    } catch (e) {
+                        console.debug('Interval check error:', e);
                     }
-                }, 1000);
+                }, 5000);
+                
+                // 监听页面变化
+                const observer = new MutationObserver((mutations) => {
+                    let needRecheck = false;
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                            needRecheck = true;
+                        }
+                    });
+                    
+                    if (needRecheck) {
+                        setTimeout(() => {
+                            try {
+                                if (config.hideAds) hideAds();
+                                if (config.hideImages) hideImages();
+                                
+                                // 确保按钮仍然存在
+                                if (!document.getElementById('pageBeautifierBtn') && config.buttonVisible) {
+                                    createControlButton();
+                                }
+                            } catch (e) {
+                                console.debug('Mutation observer error:', e);
+                            }
+                        }, 1000);
+                    }
+                });
+                
+                if (document.body) {
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+                
+                // 欢迎提示
+                setTimeout(() => {
+                    if (config.enableAnimations && config.buttonVisible) {
+                        showNotification('🎨 页面美化助手 v2.0 已就绪！右键按钮可快速隐藏', 'info', 4000);
+                    }
+                }, 2000);
+                
+            } catch (e) {
+                console.error('页面美化助手初始化错误:', e);
             }
-        });
+        };
         
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-        
-        // 欢迎提示
-        setTimeout(() => {
-            if (config.enableAnimations && config.buttonVisible) {
-                showNotification('🎨 页面美化助手 v2.0 已就绪！右键按钮可快速隐藏', 'info', 3000);
-            }
-        }, 2000);
+        // 确保在DOM完全加载后初始化
+        if (document.body) {
+            initAfterDOM();
+        } else {
+            setTimeout(initAfterDOM, 100);
+        }
     }
     
     // 添加全局键盘快捷键
@@ -1280,9 +1389,15 @@
                     e.preventDefault();
                     if (config.enableAnimations) {
                         panel.style.animation = 'pageBeautifierSlideIn reverse 0.3s ease-out';
-                        setTimeout(() => panel.remove(), 300);
+                        setTimeout(() => {
+                            if (panel.parentNode) {
+                                panel.parentNode.removeChild(panel);
+                            }
+                        }, 300);
                     } else {
-                        panel.remove();
+                        if (panel.parentNode) {
+                            panel.parentNode.removeChild(panel);
+                        }
                     }
                 }
             }
